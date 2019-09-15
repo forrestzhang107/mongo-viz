@@ -1,0 +1,28 @@
+{
+  "name": "mongodb-react-gui",
+  "version": "1.0.0",
+  "description": "MongoDB React GUI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"nodemon node app.js --configFile\" \"npm run start --prefix client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forrestzhang107/mongodb-react-gui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/forrestzhang107/mongodb-react-gui/issues"
+  },
+  "homepage": "https://github.com/forrestzhang107/mongodb-react-gui#readme",
+  "dependencies": {
+    "commander": "^3.0.1",
+    "express": "^4.17.1",
+    "mongodb": "~3.0.8",
+    "nodemon": "^1.19.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {}
+}
