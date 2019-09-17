@@ -1,7 +1,9 @@
 const config = require('../config')
-const MongoClient = require('mongodb').MongoClient
+const mongodb = require('mongodb')
+const MongoClient = mongodb.MongoClient
+const ObjectID = mongodb.ObjectID
 
-let db
+let connection
 let connected
 
 async function init() {
@@ -9,6 +11,25 @@ async function init() {
 }
 
 exports.init = init
+
+async function deleteDocument(payload) {
+  return await collection(payload.collectionID)
+    .deleteOne({'_id': ObjectID(payload.objectID)})
+}
+
+exports.deleteDocument = deleteDocument
+
+async function dropCollection(payload) {
+  return await collection(payload.collectionID).drop()
+}
+
+exports.dropCollection = dropCollection
+
+async function createCollection(payload) {
+  return await getDB().createCollection(payload.collectionID)
+}
+
+exports.createCollection = createCollection
 
 async function getCollections() {
   const res = await getDB().listCollections().toArray()
@@ -41,7 +62,6 @@ async function getCollectionStats(collectionID) {
 
 async function getDocuments(payload) {
   const page = payload.page
-  console.log(payload.sort)
   const docs = await collection(payload.collectionID)
     .find(payload.query)
     .sort(payload.sort)
@@ -70,7 +90,7 @@ async function connect() {
   + ':' + serverConfig.port
   + '/' + serverConfig.database
   try {
-    db = await MongoClient.connect(url)
+    connection = await MongoClient.connect(url)
     connected = true
   }
   catch(e) {
@@ -80,7 +100,7 @@ async function connect() {
 
 function getDB() {
   const database = config.getConfig().database
-  return db.db(database)
+  return connection.db(database)
 }
 
 exports.getDB = getDB
@@ -92,7 +112,7 @@ function collection(collectionID) {
 exports.collection = collection
 
 function close() {
-  return db.close()
+  return connection.close()
 }
 
 exports.close = close

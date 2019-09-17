@@ -1,6 +1,8 @@
 const express = require('express')
 const path = require('path')
+const bodyParser = require('body-parser')
 const program = require('commander')
+const open = require('open')
 const config = require('./config')
 const api = require('./routes/api')
 const mongo = require('./core/mongo')
@@ -33,11 +35,13 @@ if (nulls.length != 0) {
 
 const app = express()
 
+app.use(bodyParser.json())
 app.use('/api', api)
 app.use(express.static(path.join(__dirname, 'client', 'build')))
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')))
 
 mongo.init().then(async () => {
-  console.log('MongoDB GUI serving port 4000')
-  app.listen(4000)
+  app.listen(1234)
+  console.log('MongoDB React GUI serving port 1234')
+  open('http://localhost:1234')
 })

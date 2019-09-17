@@ -53,27 +53,26 @@ function Collection(props) {
   // JSX
 
   return (
-    <Container className='first center'>
-    <div className='mb-25'>
-      <h3>{collectionID}</h3>
-      <div className='hspread'>
-        {renderAppNav()}
-        {renderPageNav()}
-      </div>
+    <Container>
+    <h3>{collectionID}</h3>
+    <div className='hspread mb-25'>
+    {renderAppNav()}
+    {renderPageNav()}
     </div>
     {renderOptions()}
     {renderData()}
+    <div className='right'>
+    {renderPageNav(true)}
+    </div>
     </Container>
   )
 
   function renderData() {
     if (data) {
       return (
-        <div>
         <div className='mb-25'>
-        </div>
         {data.map((doc, index) =>
-          <Document key={index} data={doc} />
+          <Document key={index} collectionID={collectionID} data={doc} refresh={refresh} />
         )}
         </div>
       )
@@ -82,7 +81,7 @@ function Collection(props) {
 
   function renderOptions() {
     return (
-      <Row>
+      <Row className='mb-15'>
       <Col lg={6}>
       <div className='hspread vcenter'>
       <div>Query:</div>
@@ -107,19 +106,19 @@ function Collection(props) {
         <div>
           <Link to='/database'>{databaseID}</Link>
           <i className="divider fas fa-chevron-right"></i>
-          <Link to={'/collection/?id=' + collectionID}>{collectionID}</Link>
+          <span onClick={() => refresh()} className='synth-link'>{collectionID}</span>
         </div>
       )
     }
   }
 
-  function renderPageNav() {
-    if (pages) {
+  function renderPageNav(reqData=false) {
+    if (pages > 1 && (!reqData || (reqData && data))) {
       return (
         <div>
         {page > 1 ? <i onClick={() => setPage(page-1)} className="nav-arrow fas fa-chevron-left"></i> : ''}
         {page + ' of ' + pages}
-        {(page < pages) ? <i onClick={() => setPage(page+1)} className="nav-arrow fas fa-chevron-right"></i> : ''}
+        {page < pages ? <i onClick={() => setPage(page+1)} className="nav-arrow fas fa-chevron-right"></i> : ''}
         </div>
       )
     }
@@ -127,9 +126,17 @@ function Collection(props) {
 
   // Helpers
 
+  async function refresh() {
+    if (page === 1 && query === '' && sort === '') getData({collectionID: collectionID, page: 1})
+    else {
+      setPage(1)
+      setQuery('')
+      setSort('')
+    }
+  }
+
   async function getDatabaseID() {
-    const config = (await GetServerConfig()).data
-    setDatabaseID(config.database)
+    setDatabaseID((await GetServerConfig()).data.database)
   }
 
   async function getData(payload) {

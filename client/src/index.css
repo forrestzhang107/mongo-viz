@@ -1,3 +1,59 @@
+.del-space {
+  width: 40px;
+}
+
+.del-space:hover {
+  cursor: pointer;
+}
+
+.del-space:focus {
+  outline: none;
+}
+
+.fa-times {
+  color: red;
+  font-size: 1.2em;
+}
+
+.fa-times:hover {
+  cursor: pointer;
+}
+
+.synth-link:hover {
+  cursor: pointer;
+  color: #00b7ff;
+}
+
+.modal-input {
+  margin: 0 .6em;
+  padding: 0 3px;
+}
+
+input:focus {
+  outline-color: #00b7ff;
+}
+
+button {
+  color: #2a2a2a;
+  letter-spacing: 1px;
+  background-color: white;
+  border: 1px solid #2a2a2a;
+  margin-right: .6em;
+  padding: .1em .6em;
+  border-radius: 3px;
+  font-size: .9em;
+  /* -webkit-transition: color 0.1s, background-color 0.1s, border-top 0.1s, border-bottom 0.1s, border-color 0.1s;
+  transition: color 0.1s, background-color 0.1s, border-top 0.1s, border-bottom 0.1s, border-color 0.1s; */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+button:focus {
+  outline: 0;
+}
+
 .vcenter {
   display: flex;
   align-items: center;
@@ -15,7 +71,7 @@
 
 .collection:hover {
   cursor: pointer;
-  color: #fc03f4;
+  color: #00b7ff;
 }
 
 .db-table {
@@ -38,6 +94,11 @@
   justify-content: space-between;
 }
 
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .divider {
   margin: 0 10px;
 }
@@ -48,7 +109,7 @@
 
 .nav-arrow:hover {
   cursor: pointer;
-  color: #fc03f4;
+  color: #00b7ff;
 }
 
 a {
@@ -56,7 +117,7 @@ a {
 }
 
 a:hover {
-  color: #fc03f4;
+  color: #00b7ff;
   text-decoration: none;
 }
 
@@ -79,6 +140,10 @@ code {
     monospace;
 }
 
+.mb-15 {
+  margin-bottom: 15px;
+}
+
 .mb-25 {
   margin-bottom: 25px;
 }
@@ -90,11 +155,14 @@ code {
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
   font-size: .9em;
-  margin: 5px 0;
+}
+
+.document:focus {
+  outline: none;
 }
 
 .toggle:hover {
-  color: #fc03f4;
+  color: #00b7ff;
   cursor: pointer;
 }
 

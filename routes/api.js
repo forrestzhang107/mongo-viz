@@ -8,6 +8,33 @@ router.get('/ping', (req, res) => {
   res.send('pong')
 })
 
+router.post('/delete-document', async (req, res) => {
+  await db.deleteDocument(req.body)
+  res.sendStatus(200)
+})
+
+router.post('/drop-collection', async (req, res) => {
+  try {
+    await db.dropCollection(req.body)
+    res.sendStatus(200)
+  }
+  catch (e) {
+    console.log(e)
+    res.sendStatus(500)
+  }
+})
+
+router.post('/create-collection', async (req, res) => {
+  try {
+    await db.createCollection(req.body)
+    res.sendStatus(200)
+  }
+  catch (e) {
+    console.log(e)
+    res.sendStatus(500)
+  }
+})
+
 router.get('/get-database-info', async (req, res) => {
   const data = await db.getDatabaseInfo()
   res.send(data)
