@@ -26,3 +26,11 @@ node app -C
 ## Collection View
 
 ![Collection View](https://raw.githubusercontent.com/forrestzhang107/mongo-viz/master/images/collection.png)
+
+## Features
+
+* Secure - Credentials are not stored anywhere
+* Visualize - Explore collections and documents
+* Query, sort, and delete documents
+* Create or drop collections
+* Lightning fast, lightweight, and responsive design
