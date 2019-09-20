@@ -12,7 +12,7 @@ function ObjectToggle(props) {
         <span className='toggle' onClick={() => setOpen(false)}>
           <i className="fas fa-angle-up"></i>
         </span>
-        <div className='object-toggle'>
+        <div className='indent'>
         {keys.map((key, index) =>
           <div key={index}>{key}: {renderProp(obj[key])}</div>
         )}
@@ -28,11 +28,7 @@ function ObjectToggle(props) {
 
   function renderProp(obj) {
     if (isPrimitive(obj)) return obj
-    return (
-      <div className='object-toggle'>
-      <ObjectToggle object={obj} />
-      </div>
-    )
+    return <ObjectToggle object={obj} />
   }
 
   // Helpers

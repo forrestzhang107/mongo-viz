@@ -14,6 +14,7 @@ program
   .option('-P, --password <password>')
   .option('-D, --database <database>')
   .option('-C, --configFile')
+  .option('--devmode')
   .parse(process.argv)
 
 if (program.configFile) config.setConfig(require('./configFile.json'))
@@ -43,5 +44,5 @@ app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'client', 'build', 
 mongo.init().then(async () => {
   app.listen(1234)
   console.log('MongoDB Visualizer serving port 1234')
-  open('http://localhost:1234')
+  if (!program.devmode) open('http://localhost:1234')
 })

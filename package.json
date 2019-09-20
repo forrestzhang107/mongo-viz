@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"nodemon node app.js --configFile\" \"npm run start --prefix client\""
+    "dev": "concurrently \"nodemon node app.js --configFile --devmode\" \"npm run start --prefix client\""
   },
   "repository": {
     "type": "git",

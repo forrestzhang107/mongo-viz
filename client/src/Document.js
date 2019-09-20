@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import ObjectToggle from './ObjectToggle'
 import { DeleteDocument } from './services'
 
 function Document(props) {
@@ -10,23 +9,17 @@ function Document(props) {
   const keys = Object.keys(obj)
 
   return (
-    <div className='document hspread'>
-    <div>
-    {keys.map((key, index) =>
-      <div key={index}>{key}: {renderProp(obj[key])}</div>
-    )}
-    </div>
-    <div tabIndex='0' className='del-space'
-    onFocus={() => setActive(true)} onBlur={() => setActive(false)}>
-    {renderDel()}
-    </div>
+    <div className='document hspread'
+    onMouseOver={() => setActive(true)} onMouseLeave={() => setActive(false)}>
+    <div className='fluid'>{keys.map((key, index) => <span key={index}>{renderPair(key, obj[key], active)}</span>)}</div>
+    {renderToolbar()}
     </div>
   )
 
-  function renderDel() {
-    if (active) return (
-      <div className='right' onClick={() => deleteDocument()}>
-      <i className="fa fa-times" aria-hidden="true"></i>
+  function renderToolbar() {
+    return (
+      <div className={'toolbar ' + (active ? '' : 'transparent')}>
+      <i onClick={() => deleteDocument()} className="fa fa-times" aria-hidden="true"></i>
       </div>
     )
   }
@@ -34,24 +27,45 @@ function Document(props) {
   // Helpers
 
   async function deleteDocument() {
-    console.log(props)
-    const res = await DeleteDocument({
+    const status = (await DeleteDocument({
       collectionID: props.collectionID,
       objectID: props.data._id
-    })
-    if (res.status === 200) props.refresh()
+    })).status
+    if (status === 200) props.refresh()
   }
 
-  function renderProp(obj) {
-    if (isPrimitive(obj)) return obj.toString()
-    else return <ObjectToggle object={obj} />
+}
+
+function ObjectToggle(props) {
+
+  const [open, setOpen] = useState(false)
+
+  const obj = props.object
+  const keys = Object.keys(obj)
+
+  if (open) {
+    return (
+      <span>
+        <span className='toggle' onClick={() => setOpen(false)}>collapse</span>
+        <div className='fluid'><div className='indent'>{keys.map((key, index) => <span key={index}>{renderPair(key, obj[key], props.active)}</span>)}</div></div>
+      </span>
+    )
   }
+  else return <span onClick={() => setOpen(true)} className='toggle'>...</span>
 
+}
 
-  function isPrimitive(test) {
-    return test !== Object(test)
+function renderPair(key, value, active) {
+  if (value !== Object(value)) {
+    const type = typeof value
+    return (
+      <div className='hspread'>
+        <div>{key}: <span className={type}>{value.toString()}</span></div>
+        {active ? <div className='type'>{type}</div> : ''}
+      </div>
+    )
   }
-
+  else return <div>{key}: <ObjectToggle object={value} active={active} /></div>
 }
 
 export default Document
