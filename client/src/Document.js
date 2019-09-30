@@ -57,10 +57,10 @@ function ObjectToggle(props) {
 
 function renderPair(key, value, active) {
   if (value !== Object(value)) {
-    const type = typeof value
+    const type = value ? typeof value : 'null'
     return (
       <div className='hspread'>
-        <div>{key}: <span className={type}>{value.toString()}</span></div>
+        <div>{key}: <span className={type}>{value ? value.toString() : 'null'}</span></div>
         {active ? <div className='type'>{type}</div> : ''}
       </div>
     )

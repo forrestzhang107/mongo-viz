@@ -10,6 +10,10 @@
   color: #FF4136;
 }
 
+.null {
+  color: #F012BE;
+}
+
 .type {
   color: var(--light-gray);
 }
@@ -27,7 +31,6 @@
 }
 
 :root {
-  --theme-color: #999;
   --delete: #fd0954;
   --light-gray: #aaaaaa;
 }
@@ -56,7 +59,6 @@
 
 .synth-link:hover {
   cursor: pointer;
-  color: var(--theme-color);
 }
 
 .modal-input {
@@ -65,7 +67,7 @@
 }
 
 input:focus {
-  outline-color: var(--theme-color);
+  outline-color: none;
 }
 
 button {
@@ -106,7 +108,6 @@ button:focus {
 
 .collection:hover {
   cursor: pointer;
-  color: var(--theme-color);
 }
 
 .db-table {
@@ -144,7 +145,6 @@ button:focus {
 
 .nav-arrow:hover {
   cursor: pointer;
-  color: var(--theme-color);
 }
 
 a {
@@ -152,7 +152,7 @@ a {
 }
 
 a:hover {
-  color: var(--theme-color);
+  color: inherit;
   text-decoration: none;
 }
 
@@ -197,7 +197,6 @@ code {
 }
 
 .toggle:hover {
-  color: var(--theme-color);
   cursor: pointer;
 }
 
