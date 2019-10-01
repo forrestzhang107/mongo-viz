@@ -72,7 +72,7 @@ function Collection(props) {
       return (
         <div className='mb-25'>
         {data.map((doc, index) =>
-          <Document key={index} collectionID={collectionID} data={doc} refresh={refresh} />
+          <Document key={index} collectionID={collectionID} data={doc} refresh={softRefresh} />
         )}
         </div>
       )
@@ -133,6 +133,15 @@ function Collection(props) {
       setQuery('')
       setSort('')
     }
+  }
+
+  async function softRefresh() {
+    getData({
+      collectionID: collectionID,
+      page: page,
+      query: JSON.parse(queryString),
+      sort: JSON.parse(sortString),
+    })
   }
 
   async function getDatabaseID() {
