@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { DeleteDocument } from './services'
+import moment from 'moment-timezone'
 
 function Document(props) {
 
@@ -7,6 +8,8 @@ function Document(props) {
 
   const obj = props.data
   const keys = Object.keys(obj)
+
+  console.log(obj)
 
   return (
     <div className='document hspread'
@@ -55,9 +58,21 @@ function ObjectToggle(props) {
 
 }
 
+function isDatetimeObj(value) {
+  if (!value) return false
+  if (value.length !== 24) return false
+  if (value.charAt(10) !== 'T') return false
+  if (value.charAt(23) !== 'Z') return false
+  return true
+}
+
 function renderPair(key, value, active) {
   if (value !== Object(value)) {
-    const type = value ? typeof value : 'null'
+    let type = value ? typeof value : 'null'
+    if (isDatetimeObj(value)) {
+      type = 'datetime'
+      value = moment(value).format('LL LTS')
+    }
     return (
       <div className='hspread'>
         <div>{key}: <span className={type}>{value ? value.toString() : 'null'}</span></div>

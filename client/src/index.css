@@ -1,3 +1,7 @@
+.datetime {
+  color: #F012BE;
+}
+
 .string {
   color: #0074D9;
 }
@@ -7,11 +11,11 @@
 }
 
 .boolean {
-  color: #FF4136;
+  color: #FF851B;
 }
 
 .null {
-  color: #F012BE;
+  color: #FF4136;
 }
 
 .type {
