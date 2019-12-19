@@ -9,8 +9,6 @@ function Document(props) {
   const obj = props.data
   const keys = Object.keys(obj)
 
-  console.log(obj)
-
   return (
     <div className='document hspread'
     onMouseOver={() => setActive(true)} onMouseLeave={() => setActive(false)}>
@@ -68,14 +66,14 @@ function isDatetimeObj(value) {
 
 function renderPair(key, value, active) {
   if (value !== Object(value)) {
-    let type = value ? typeof value : 'null'
+    let type = value || typeof value == 'boolean' ? typeof value : 'null'
     if (isDatetimeObj(value)) {
       type = 'datetime'
       value = moment(value).format('LL LTS')
     }
     return (
       <div className='hspread'>
-        <div>{key}: <span className={type}>{value ? value.toString() : 'null'}</span></div>
+        <div>{key}: <span className={type}>{value || typeof value == 'boolean' ? value.toString() : 'null'}</span></div>
         {active ? <div className='type'>{type}</div> : ''}
       </div>
     )
