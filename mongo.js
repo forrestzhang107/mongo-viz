@@ -1,10 +1,17 @@
-const config = require('../config')
 const mongodb = require('mongodb')
 const MongoClient = mongodb.MongoClient
 const ObjectID = mongodb.ObjectID
 
-let connection
-let connected
+let connection, connected, uri, database
+
+exports.setConfig = (config) => {
+  uri = config[0]
+  database = config[1]
+}
+
+exports.getDatabaseID = () => {
+  return database
+}
 
 async function init() {
   if (!connected) await connect()
@@ -83,14 +90,8 @@ async function getDocumentCount(payload) {
 exports.getDocumentCount = getDocumentCount
 
 async function connect() {
-  const serverConfig = config.getConfig()
-  const url = 'mongodb://' + serverConfig.username
-  + ':' + serverConfig.password
-  + '@' + serverConfig.hostname
-  + ':' + serverConfig.port
-  + '/' + serverConfig.database
   try {
-    connection = await MongoClient.connect(url)
+    connection = await MongoClient.connect(uri)
     connected = true
   }
   catch(e) {
@@ -99,7 +100,6 @@ async function connect() {
 }
 
 function getDB() {
-  const database = config.getConfig().database
   return connection.db(database)
 }
 

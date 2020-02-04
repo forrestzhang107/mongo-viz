@@ -24,6 +24,6 @@ export async function GetDocumentCount(payload) {
   return await axios.get('/api/get-document-count/' + JSON.stringify(payload))
 }
 
-export async function GetServerConfig() {
-  return await axios.get('/api/get-server-config')
+export async function GetDatabaseID() {
+  return await axios.get('/api/get-database-id')
 }

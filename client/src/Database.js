@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container } from 'react-bootstrap'
 import Modal from 'react-modal'
-import { GetDatabaseInfo, GetServerConfig, CreateCollection, DropCollection } from './services'
+import { GetDatabaseInfo, GetDatabaseID, CreateCollection, DropCollection } from './services'
 
 const modalStyle = {
   content: {
@@ -114,7 +114,7 @@ function Home(props) {
   // Helpers
 
   async function getDatabaseID() {
-    return setDatabaseID((await GetServerConfig()).data.database)
+    return setDatabaseID((await GetDatabaseID()).data)
   }
 
   async function getDatabaseInfo() {

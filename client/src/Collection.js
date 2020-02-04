@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Document from './Document'
 import qs from 'query-string'
-import { GetServerConfig, GetDocuments, GetDocumentCount } from './services'
+import { GetDatabaseID, GetDocuments, GetDocumentCount } from './services'
 
 function Collection(props) {
 
@@ -145,7 +145,7 @@ function Collection(props) {
   }
 
   async function getDatabaseID() {
-    setDatabaseID((await GetServerConfig()).data.database)
+    setDatabaseID((await GetDatabaseID()).data)
   }
 
   async function getData(payload) {

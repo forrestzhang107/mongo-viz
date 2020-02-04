@@ -3,35 +3,22 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const program = require('commander')
 const open = require('open')
-const config = require('./config')
-const api = require('./routes/api')
-const mongo = require('./core/mongo')
+const api = require('./api')
+const mongo = require('./mongo')
+const config = require('./config.json')
 
 program
-  .option('-H, --hostname <hostname>')
-  .option('-N, --port <port>')
-  .option('-U, --username <username>')
-  .option('-P, --password <password>')
   .option('-D, --database <database>')
-  .option('-C, --configFile')
   .option('--devmode')
   .parse(process.argv)
 
-if (program.configFile) config.setConfig(require('./configFile.json'))
-else config.setConfig({
-  hostname: program.hostname || null,
-  port: program.port || null,
-  username: program.username || null,
-  password: program.password || null,
-  database: program.database || null,
-})
-
-const nulls = []
-const serverConfig = config.getConfig()
-for (const prop of Object.keys(serverConfig)) if (!serverConfig[prop]) nulls.push(prop)
-if (nulls.length != 0) {
-  console.log('Missing server configuration: ' + nulls.join(', '))
-  return console.log('Please use: node app -H [hostname] -N [port] -U [username] -P [password] -D [database]')
+if (program.database) {
+  const [uri, database] = config[program.database]
+  if (!uri) return console.log(`Database ${program.database} missing in config.json`)
+  mongo.setConfig([uri, database])
+}
+else {
+  return console.log('Please use: node app -D [database]')
 }
 
 const app = express()

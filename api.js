@@ -1,6 +1,6 @@
 const express = require('express')
-const config = require('../config')
-const db = require('../core/mongo')
+const config = require('./config.json')
+const db = require('./mongo')
 
 const router = express.Router()
 
@@ -52,9 +52,8 @@ router.get('/get-document-count/:payload', async (req, res) => {
   res.send(data)
 })
 
-router.get('/get-server-config', (req, res) => {
-  const data = config.getConfig()
-  res.send(data)
+router.get('/get-database-id', (req, res) => {
+  res.send(db.getDatabaseID())
 })
 
 module.exports = router

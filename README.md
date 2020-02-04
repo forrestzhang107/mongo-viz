@@ -7,16 +7,19 @@ Scope of actions is currently limited to collection creation/deletion and docume
 
 ## Connecting
 
-Username/password authentication is required.
+Credentials should be stored in config.json in the following format:
 
 ```
-node app -H [hostname] -N [port] -U [username] -P [password] -D [database]
+{
+  database: [mongoURI, databaseID]
+}
+
 ```
 
-Server configuration & credentials can also be stored as a configFile.json and initialized with:
+The app can be started with the command:
 
 ```
-node app -C
+node app -D <database>
 ```
 
 ## Database View
