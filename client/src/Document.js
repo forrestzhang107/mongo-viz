@@ -8,7 +8,7 @@ function Document(props) {
 
   const obj = props.data
   const keys = Object.keys(obj)
-
+  
   return (
     <div className='document hspread'
     onMouseOver={() => setActive(true)} onMouseLeave={() => setActive(false)}>
@@ -66,19 +66,27 @@ function isDatetimeObj(value) {
 
 function renderPair(key, value, active) {
   if (value !== Object(value)) {
-    let type = value || typeof value == 'boolean' ? typeof value : 'null'
-    if (isDatetimeObj(value)) {
-      type = 'datetime'
-      value = moment(value).format('LL LTS')
-    }
+    const type = getType(value)
+    if (type === 'datetime') value = moment(value).format('LL LTS')
     return (
       <div className='hspread'>
-        <div>{key}: <span className={type}>{value || typeof value == 'boolean' ? value.toString() : 'null'}</span></div>
+        <div>{key}: <span className={type}>{toString(value)}</span></div>
         {active ? <div className='type'>{type}</div> : ''}
       </div>
     )
   }
   else return <div>{key}: <ObjectToggle object={value} active={active} /></div>
+}
+
+function getType(value) {
+  if (value == null) return 'null'
+  if (isDatetimeObj(value)) return 'datetime'
+  return typeof value
+}
+
+function toString(value) {
+  if (value == null) return 'null'
+  return value.toString()
 }
 
 export default Document
