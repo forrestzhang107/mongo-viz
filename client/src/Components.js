@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ReactLoading from "react-loading";
+import { FiChevronRight } from "react-icons/fi";
 
 export function Loader(props) {
   const { display } = props;
@@ -14,11 +15,11 @@ export function Breadcrumb(props) {
   return (
     <div className="crumbs">
       {trail.map(([title, path], i) => (
-        <span key={title}>
+        <span key={title} style={{ display: "flex", alignItems: "center" }}>
           {path ? (
             <>
               <Link to={path}>{title}</Link>
-              <i className="fas fa-chevron-right" />
+              <FiChevronRight size={20} />
             </>
           ) : (
             <span style={{ fontWeight: "500" }}>{title}</span>

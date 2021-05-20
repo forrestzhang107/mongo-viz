@@ -229,14 +229,16 @@ code {
 
 .crumbs {
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
 }
 
 .crumbs a {
   color: var(--link-color);
 }
 
-.crumbs i {
-  margin: 0 10px;
+.crumbs svg {
+  margin: 0 4px;
 }
 
 .db-header {
