@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import Modal from "react-modal";
 import Loader from "react-loading";
-import { GetDatabaseInfo, CreateCollection, DropCollection } from "./services";
+import Request, { CreateCollection, DropCollection } from "./services";
 
 const modalStyle = {
   content: {
@@ -18,14 +18,29 @@ Modal.setAppElement("#root");
 
 function Database(props) {
   const [data, setData] = useState(null);
+  const [dbName, setDbName] = useState(localStorage.getItem("dbName") || "");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDropModal, setShowDropModal] = useState(false);
   const [create, setCreate] = useState("");
   const [drop, setDrop] = useState("");
 
   useEffect(() => {
-    getDatabaseInfo();
+    (async () => {
+      const { data } = await Request("/get-database-id");
+      localStorage.setItem("dbName", data);
+      setDbName(data);
+    })();
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  async function getData() {
+    setData(null);
+    const { data } = await Request("/get-database-info");
+    setData(data);
+  }
 
   // JSX
 
@@ -33,14 +48,18 @@ function Database(props) {
     <Container>
       <div className="card-max">
         <div className="db-header">
-          <div className="db-title">
-            <h3 className="mb-0">ExpressoDB</h3>
-            <i className="fas fa-sync" onClick={getDatabaseInfo} />
-          </div>
-          <div>
-            {renderCreateCollection()}
-            {renderDropCollection()}
-          </div>
+          {dbName && (
+            <>
+              <div className="db-title">
+                <h3 className="mb-0">{dbName}</h3>
+                <i className="fas fa-sync" onClick={getData} />
+              </div>
+              <div>
+                {renderCreateCollection()}
+                {renderDropCollection()}
+              </div>
+            </>
+          )}
         </div>
         {renderData()}
       </div>
@@ -176,10 +195,12 @@ function Database(props) {
 
   // Helpers
 
-  async function getDatabaseInfo() {
-    setData(null);
-    return setData((await GetDatabaseInfo()).data);
-  }
+  // async function getDatabaseInfo() {
+  //   setData(null);
+  //   const { data } = await GetDatabaseInfo();
+  //   setData(data);
+  //   // return setData((await GetDatabaseInfo()).data);
+  // }
 
   function toCollection(collectionID) {
     props.history.push("/collection?id=" + collectionID);
@@ -189,7 +210,7 @@ function Database(props) {
     const res = await CreateCollection({ collectionID: create });
     if (res.status === 200) {
       setShowCreateModal(false);
-      getDatabaseInfo();
+      getData();
     }
   }
 
@@ -197,7 +218,7 @@ function Database(props) {
     const res = await DropCollection({ collectionID: drop });
     if (res.status === 200) {
       setShowDropModal(false);
-      getDatabaseInfo();
+      getData();
     }
   }
 }

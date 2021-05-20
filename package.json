@@ -19,6 +19,7 @@
   "homepage": "https://github.com/forrestzhang107/mongodb-react-gui#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^4.1.1",
     "commander": "^3.0.1",
     "express": "^4.17.1",
     "mongodb": "^3.6.7",

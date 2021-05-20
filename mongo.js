@@ -23,7 +23,7 @@ async function connect() {
 }
 
 function getDB() {
-  return db.db("Skiplo");
+  return db.db(dbID);
 }
 
 function collection(coll) {

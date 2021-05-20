@@ -21,7 +21,7 @@ export function Breadcrumb(props) {
               <i className="fas fa-chevron-right" />
             </>
           ) : (
-            <span className="active">{title}</span>
+            <span style={{ fontWeight: "500" }}>{title}</span>
           )}
         </span>
       ))}

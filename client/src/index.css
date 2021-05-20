@@ -1,3 +1,20 @@
+:root {
+  --delete: #ed2e4b;
+  --theme-color: #00aaff;
+  --off-black: #2a2a2a;
+  --light-gray: #aaaaaa;
+  --light-theme: #bae8ff;
+  --link-color: #0074d9;
+}
+
+.link-color {
+  color: var(--link-color);
+}
+
+.clickable:hover {
+  cursor: pointer;
+}
+
 .datetime {
   color: #f012be;
 }
@@ -203,6 +220,7 @@ code {
 
 .toggle:hover {
   cursor: pointer;
+  color: #777;
 }
 
 .indent {
@@ -213,16 +231,8 @@ code {
   margin-bottom: 12px;
 }
 
-.crumbs .active {
-  color: var(--link-color);
-}
-
 .crumbs a {
-  color: inherit;
-}
-
-.crumbs a:hover {
-  color: inherit;
+  color: var(--link-color);
 }
 
 .crumbs i {
@@ -264,4 +274,19 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.modal-form {
+  width: inherit;
+  white-space: nowrap;
+}
+
+.modal-form input {
+  margin: 0 0.6em;
+  padding: 0 3px;
+  width: inherit;
+}
+
+.modal-form .app-button {
+  margin-top: 0;
 }

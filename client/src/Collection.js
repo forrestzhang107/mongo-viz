@@ -7,6 +7,8 @@ import { Breadcrumb } from "./Components";
 import { GetDocuments } from "./services";
 
 function Collection(props) {
+  const dbName = localStorage.getItem("dbName");
+
   const [collectionID, setCollectionID] = useState(null);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(null);
@@ -56,7 +58,7 @@ function Collection(props) {
 
   return (
     <Container>
-      <Breadcrumb trail={[["ExpressoDB", "/auth/database"], [collectionID]]} />
+      <Breadcrumb trail={[[dbName, "/auth/database"], [collectionID]]} />
       <div className="card-max">
         <div className="db-header">
           <div className="db-title">
