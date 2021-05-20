@@ -1,191 +1,195 @@
-import React, { useState, useEffect } from 'react'
-import { Container, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
-import Document from './Document'
-import qs from 'query-string'
-import { GetDatabaseID, GetDocuments, GetDocumentCount } from './services'
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import Document from "./Document";
+import qs from "query-string";
+import Loader from "react-loading";
+import { Breadcrumb } from "./Components";
+import { GetDocuments } from "./services";
 
 function Collection(props) {
-
-  const [databaseID, setDatabaseID] = useState(null)
-  const [collectionID, setCollectionID] = useState(null)
-  const [page, setPage] = useState(1)
-  const [pages, setPages] = useState(null)
-  const [data, setData] = useState(null)
-  const [query, setQuery] = useState('')
-  const [queryString, setQueryString] = useState('{}')
-  const [sort, setSort] = useState('')
-  const [sortString, setSortString] = useState('{}')
+  const [collectionID, setCollectionID] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(null);
+  const [data, setData] = useState(null);
+  const [query, setQuery] = useState("");
+  const [queryString, setQueryString] = useState("{}");
+  const [sort, setSort] = useState("");
+  const [sortString, setSortString] = useState("{}");
 
   useEffect(() => {
-    getDatabaseID()
-    const parse = qs.parse(window.location.search)
-    setCollectionID(parse.id)
-    if (parse.page) setPage(parse.page)
-  }, [])
+    const parse = qs.parse(window.location.search);
+    setCollectionID(parse.id);
+  }, []);
 
   useEffect(() => {
-    if (collectionID) getPages({
-      collectionID: collectionID,
-      query: JSON.parse(queryString),
-    })
-  }, [collectionID, queryString])
+    if (collectionID)
+      getData({
+        collectionID,
+        page,
+        query: JSON.parse(queryString),
+        sort: JSON.parse(sortString),
+      });
+  }, [collectionID, page, queryString, sortString]);
 
   useEffect(() => {
-    if (collectionID) getData({
-      collectionID: collectionID,
-      page: page,
-      query: JSON.parse(queryString),
-      sort: JSON.parse(sortString),
-    })
-  }, [collectionID, page, queryString, sortString])
+    const obj = {};
+    const tup = query.split("=");
+    try {
+      if (tup[1]) obj[tup[0]] = JSON.parse(tup[1]);
+      setQueryString(JSON.stringify(obj));
+    } catch (e) {
+      setQueryString("{}");
+    }
+  }, [query]);
 
   useEffect(() => {
-    const str = parseQuery(query)
-    setQueryString(str)
-  }, [query])
-
-  useEffect(() => {
-    const str = parseSort(sort)
-    setSortString(str)
-  }, [sort])
+    const obj = {};
+    const tup = sort.split("=");
+    const value = tup[1];
+    if (value === "1" || value === "-1") {
+      obj[tup[0]] = parseInt(value);
+      setSortString(JSON.stringify(obj));
+    } else setSortString("{}");
+  }, [sort]);
 
   // JSX
 
   return (
     <Container>
-    <h3>{collectionID}</h3>
-    <div className='hspread mb-25'>
-    {renderAppNav()}
-    {renderPageNav()}
-    </div>
-    {renderOptions()}
-    {renderData()}
-    <div className='right'>
-    {renderPageNav(true)}
-    </div>
+      <Breadcrumb trail={[["ExpressoDB", "/auth/database"], [collectionID]]} />
+      <div className="card-max">
+        <div className="db-header">
+          <div className="db-title">
+            <h3 className="mb-0">{collectionID}</h3>
+            <i className="fas fa-sync" onClick={refresh} />
+          </div>
+          {renderPageNav()}
+        </div>
+        {renderOptions()}
+        {renderData()}
+        {data && <div className="bottom-nav">{renderPageNav()}</div>}
+      </div>
     </Container>
-  )
+  );
 
   function renderData() {
-    if (data) {
+    if (data)
       return (
-        <div className='mb-25'>
-        {data.map((doc, index) =>
-          <Document key={index} collectionID={collectionID} data={doc} refresh={softRefresh} />
-        )}
+        <>
+          {data.map((doc, index) => (
+            <Document
+              key={index}
+              collectionID={collectionID}
+              data={doc}
+              refresh={softRefresh}
+            />
+          ))}
+        </>
+      );
+    else
+      return (
+        <div className="loader-wrapper">
+          <Loader type="spin" color="#00aaff" />
         </div>
-      )
-    }
+      );
   }
 
   function renderOptions() {
     return (
-      <Row className='mb-15'>
-      <Col lg={6}>
-      <div className='hspread vcenter'>
-      <div>Query:</div>
-      <input className='opt-input' type='text'
-      value={query} onChange={evt => setQuery(evt.target.value)} />
-      </div>
-      </Col>
-      <Col lg={6}>
-      <div className='hspread vcenter'>
-      <div>Sort:</div>
-      <input className='opt-input' type='text'
-      value={sort} onChange={evt => setSort(evt.target.value)} />
-      </div>
-      </Col>
+      <Row className="mb-16">
+        <Col lg={6}>
+          <div className="hspread vcenter">
+            <div>Query:</div>
+            <input
+              className="opt-input"
+              value={query}
+              onChange={(evt) => setQuery(evt.target.value)}
+            />
+          </div>
+        </Col>
+        <Col lg={6}>
+          <div className="hspread vcenter">
+            <div>Sort:</div>
+            <input
+              className="opt-input"
+              value={sort}
+              onChange={(evt) => setSort(evt.target.value)}
+            />
+          </div>
+        </Col>
       </Row>
-    )
+    );
   }
 
-  function renderAppNav() {
-    if (databaseID) {
+  function renderPageNav() {
+    if (pageCount > 1) {
       return (
         <div>
-          <Link to='/database'>{databaseID}</Link>
-          <i className="divider fas fa-chevron-right"></i>
-          <span onClick={() => refresh()} className='synth-link'>{collectionID}</span>
+          {page > 1 && (
+            <>
+              <i
+                onClick={() => onSetPage(1)}
+                className="nav-icon fas fa-angle-double-left"
+              />
+              <i
+                onClick={() => onSetPage(page - 1)}
+                className="nav-arrow fas fa-angle-left"
+              ></i>
+            </>
+          )}
+          Page {page + " of " + pageCount}
+          {page < pageCount && (
+            <>
+              <i
+                onClick={() => onSetPage(page + 1)}
+                className="nav-arrow fas fa-angle-right"
+              ></i>
+              <i
+                onClick={() => onSetPage(pageCount)}
+                className="nav-icon fas fa-angle-double-right"
+              />
+            </>
+          )}
         </div>
-      )
-    }
-  }
-
-  function renderPageNav(reqData=false) {
-    if (pages > 1 && (!reqData || (reqData && data))) {
-      return (
-        <div>
-        {page > 1 ? <i onClick={() => setPage(page-1)} className="nav-arrow fas fa-chevron-left"></i> : ''}
-        {page + ' of ' + pages}
-        {page < pages ? <i onClick={() => setPage(page+1)} className="nav-arrow fas fa-chevron-right"></i> : ''}
-        </div>
-      )
+      );
     }
   }
 
   // Helpers
 
+  function onSetPage(update) {
+    setData(null);
+    setPage(update);
+  }
+
   async function refresh() {
-    if (page === 1 && query === '' && sort === '') getData({collectionID: collectionID, page: 1})
+    if (page === 1 && query === "" && sort === "")
+      getData({ collectionID, page: 1 });
     else {
-      setPage(1)
-      setQuery('')
-      setSort('')
+      setPage(1);
+      setQuery("");
+      setSort("");
     }
   }
 
   async function softRefresh() {
     getData({
-      collectionID: collectionID,
-      page: page,
+      collectionID,
+      page,
       query: JSON.parse(queryString),
       sort: JSON.parse(sortString),
-    })
-  }
-
-  async function getDatabaseID() {
-    setDatabaseID((await GetDatabaseID()).data)
+    });
   }
 
   async function getData(payload) {
-    setData(null)
-    const data = (await GetDocuments(payload)).data
-    setData(data)
+    setData(null);
+    const { page } = payload;
+    const { data } = await GetDocuments(payload);
+    const { results, count } = data;
+    setData(results);
+    setPageCount(Math.ceil(count / 10));
+    if (!results[0] && page > 1) setPage(page - 1);
   }
-
-  async function getPages(payload) {
-    setPages(null)
-    const count = (await GetDocumentCount(payload)).data
-    setPages(Math.ceil(count/10))
-  }
-
-  function parseQuery(str) {
-    if (str[0] === '{') str = str.substring(1, str.length-1)
-    str = str.replace(/ |'|"/g,'')
-    const props = str.split(',')
-    const obj = {}
-    props.forEach((prop) => {
-        const tup = prop.split(':')
-        if (!tup[1]) return '{}'
-        obj[tup[0]] = tup[1]
-    })
-    return JSON.stringify(obj)
-  }
-
-  function parseSort(str) {
-    if (str[0] === '{') str = str.substring(1, str.length-1)
-    str = str.replace(/ |'|"/g,'')
-    const props = str.split(',')
-    const obj = {}
-    props.forEach((prop) => {
-        const tup = prop.split(':')
-        if (!tup[1] || isNaN(tup[1])) return '{}'
-        obj[tup[0]] = parseInt(tup[1])
-    })
-    return JSON.stringify(obj)
-  }
-
 }
 
-export default Collection
+export default Collection;
